@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger Pro</title>
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: 'Segoe UI', sans-serif;
+          background: #0f172a;
+          color: #fff;
+        }
+
+        /* 2. Головний контейнер та сітка (Layout) */
+        .app {
+          display: flex;
+          height: 100vh;
+        }
+
+        /* 3. Бокова панель (Sidebar) */
+        .sidebar {
+          width: 260px;
+          background: #111827;
+          padding: 20px;
+          border-right: 1px solid #1f2937;
+        }
+
+        .room {
+          padding: 12px;
+          border-radius: 10px;
+          background: #1e293b;
+          margin-top: 10px;
+        }
+
+        /* 4. Основна зона чату (Chat Area) */
+        .chat {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        header {
+          padding: 20px;
+          border-bottom: 1px solid #1f2937;
+        }
+
+        /* 5. Повідомлення (Messages) */
+        .messages {
+          flex: 1;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          overflow: auto;
+        }
+
+        .message {
+          background: #2563eb;
+          padding: 12px 16px;
+          border-radius: 16px;
+          max-width: 70%;
+        }
+
+        /* 6. Поле введення та кнопки (Composer / Inputs) */
+        .composer {
+          display: flex;
+          gap: 10px;
+          padding: 20px;
+          border-top: 1px solid #1f2937;
+        }
+
+        input {
+          flex: 1;
+          padding: 12px;
+          border: none;
+          border-radius: 10px;
+          background: #1e293b;
+          color: white;
+        }
+
+        button {
+          padding: 12px 18px;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <h2>Messenger</h2>
+            <div class="room active">Global Chat</div>
+            <!-- Маленький бонус: показуємо, хто зараз залогінений -->
+            <div style="margin-top: auto; padding: 10px; font-size: 14px; color: #94a3b8;">
+                Юзер: <strong>{{ request.user.username }}</strong>
+            </div>
+        </aside>
+
+        <main class="chat">
+            <header>Global Chat</header>
+
+            <!-- Зона повідомлень -->
+            <div id="messages" class="messages">
+                {% for msg in messages %}
+                    <div class="message" {% if msg.user == request.user %}style="align-self: flex-end; background: #1e3a8a;"{% endif %}>
+                        <!-- Якщо повідомлення написав ти, воно посунеться вправо і буде трохи темнішим -->
+                        <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">
+                            {{ msg.user.username }} • {{ msg.timestamp|date:"H:i" }}
+                        </div>
+                        <div>{{ msg.text }}</div>
+                    </div>
+                {% empty %}
+                    <div style="text-align: center; color: #64748b; margin-top: 20px;">
+                        Повідомлень ще немає. Напишіть щось першим!
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Форма введення (замість JS-скрипту) -->
+            <form method="POST" class="composer">
+                {% csrf_token %}
+                <input id="message" name="text" placeholder="Написати повідомлення..." required autocomplete="off">
+                <button type="submit">Надіслати</button>
+            </form>
+        </main>
+    </div>
+
+    <!-- Скрипт app.js поки що видаляємо або коментуємо, він нам не потрібен -->
+</body>
+</html>

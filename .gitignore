@@ -1,0 +1,16 @@
+# Django, Python, Virtual Envs, & IDEs
+*.log
+local_settings.py
+db.sqlite3*
+media/
+staticfiles/
+static_cdn/
+__pycache__/
+*.py[cod]
+.venv/ venv/ env/
+.env*
+*.secret
+*.egg-info/
+.idea/
+.vscode/
+.DS_Store

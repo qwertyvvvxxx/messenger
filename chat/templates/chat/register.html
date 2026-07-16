@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстрація — Messenger Pro</title>
+    <link rel="stylesheet" href="/static/chat/style.css">
+    <style>
+        .register-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            background: #0f172a;
+            padding: 20px;
+        }
+        .register-card {
+            background: #111827;
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid #1f2937;
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+        }
+        .register-card h2 {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .register-card p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        /* Стилізація стандартних полів форми Django */
+        .register-card form p {
+            text-align: left;
+            margin-bottom: 16px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .register-card form input {
+            width: 100%;
+            margin-top: 6px;
+            display: block;
+        }
+        .register-card form .helptext {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .register-card button {
+            width: 100%;
+            background: #10b981; /* Зелена кнопка для реєстрації */
+            color: white;
+            font-weight: bold;
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .register-card button:hover {
+            background: #059669;
+        }
+        .errorlist {
+            color: #ef4444;
+            list-style: none;
+            padding: 0;
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .login-link {
+            display: block;
+            margin-top: 20px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .login-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <h2>Створити акаунт</h2>
+            <p>Приєднуйся до нашого месенджера</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Зареєструватися</button>
+            </form>
+
+            <a href="{% url 'login' %}" class="login-link">Вже є акаунт? Увійти</a>
+        </div>
+    </div>
+</body>
+</html>
