@@ -17,13 +17,11 @@
           color: #fff;
         }
 
-        /* 2. Головний контейнер та сітка (Layout) */
         .app {
           display: flex;
           height: 100vh;
         }
 
-        /* 3. Бокова панель (Sidebar) */
         .sidebar {
           width: 260px;
           background: #111827;
@@ -38,7 +36,6 @@
           margin-top: 10px;
         }
 
-        /* 4. Основна зона чату (Chat Area) */
         .chat {
           flex: 1;
           display: flex;
@@ -50,7 +47,6 @@
           border-bottom: 1px solid #1f2937;
         }
 
-        /* 5. Повідомлення (Messages) */
         .messages {
           flex: 1;
           padding: 20px;
@@ -67,7 +63,6 @@
           max-width: 70%;
         }
 
-        /* 6. Поле введення та кнопки (Composer / Inputs) */
         .composer {
           display: flex;
           gap: 10px;
@@ -97,7 +92,6 @@
         <aside class="sidebar">
             <h2>Messenger</h2>
             <div class="room active">Global Chat</div>
-            <!-- Маленький бонус: показуємо, хто зараз залогінений -->
             <div style="margin-top: auto; padding: 10px; font-size: 14px; color: #94a3b8;">
                 Юзер: <strong>{{ request.user.username }}</strong>
             </div>
@@ -106,15 +100,27 @@
         <main class="chat">
             <header>Global Chat</header>
 
-            <!-- Зона повідомлень -->
             <div id="messages" class="messages">
                 {% for msg in messages %}
-                    <div class="message" {% if msg.user == request.user %}style="align-self: flex-end; background: #1e3a8a;"{% endif %}>
-                        <!-- Якщо повідомлення написав ти, воно посунеться вправо і буде трохи темнішим -->
-                        <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">
-                            {{ msg.user.username }} • {{ msg.timestamp|date:"H:i" }}
+                    <div style="display: flex; gap: 10px; align-items: flex-end; max-width: 70%; {% if msg.user == request.user %}flex-direction: row-reverse; align-self: flex-end;{% endif %}">
+
+                        <a href="{% url 'profile' username=msg.user.username %}" style="text-decoration: none; flex-shrink: 0;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #2563eb; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: white; overflow: hidden; border: 2px solid #1e293b;">
+                                {% if msg.user.profile.avatar %}
+                                    <img src="{{ msg.user.profile.avatar.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                    {{ msg.user.username|slice:":1"|upper }}
+                                {% endif %}
+                            </div>
+                        </a>
+
+                        <div class="message" style="max-width: 100%; margin: 0; {% if msg.user == request.user %}background: #1e3a8a;{% endif %}">
+                            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">
+                                {{ msg.user.username }} • {{ msg.timestamp|date:"H:i" }}
+                            </div>
+                            <div>{{ msg.text }}</div>
                         </div>
-                        <div>{{ msg.text }}</div>
+
                     </div>
                 {% empty %}
                     <div style="text-align: center; color: #64748b; margin-top: 20px;">
@@ -123,7 +129,6 @@
                 {% endfor %}
             </div>
 
-            <!-- Форма введення (замість JS-скрипту) -->
             <form method="POST" class="composer">
                 {% csrf_token %}
                 <input id="message" name="text" placeholder="Написати повідомлення..." required autocomplete="off">
@@ -132,6 +137,5 @@
         </main>
     </div>
 
-    <!-- Скрипт app.js поки що видаляємо або коментуємо, він нам не потрібен -->
 </body>
 </html>

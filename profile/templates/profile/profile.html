@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профіль {{ user_object.username }} | Messenger Pro</title>
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: 'Segoe UI', sans-serif;
+          background: #0f172a;
+          color: #fff;
+        }
+
+        /* Головний контейнер (Layout) */
+        .app {
+          display: flex;
+          height: 100vh;
+        }
+
+        /* Бокова панель (Sidebar) */
+        .sidebar {
+          width: 260px;
+          background: #111827;
+          padding: 20px;
+          border-right: 1px solid #1f2937;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .sidebar h2 {
+          font-size: 24px;
+          margin-bottom: 20px;
+        }
+
+        .back-link {
+          padding: 12px;
+          border-radius: 10px;
+          background: #1e293b;
+          color: #3b82f6;
+          text-decoration: none;
+          text-align: center;
+          font-weight: 600;
+          transition: background 0.2s;
+        }
+
+        .back-link:hover {
+          background: #334155;
+        }
+
+        /* Основна зона профілю */
+        .profile-container {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 40px;
+          overflow-y: auto;
+        }
+
+        /* Картка профілю */
+        .profile-card {
+          width: 100%;
+          max-width: 550px;
+          background: #111827;
+          border: 1px solid #1f2937;
+          border-radius: 16px;
+          padding: 30px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 24px;
+        }
+
+        /* Аватарка або Заглушка */
+        .avatar-container {
+          width: 110px;
+          height: 110px;
+          border-radius: 50%;
+          overflow: hidden;
+          background: #2563eb;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 36px;
+          font-weight: bold;
+          color: white;
+          border: 3px solid #1e3a8a;
+        }
+
+        .avatar-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        /* Блок з нікнеймом та системним статусом */
+        .user-info {
+          text-align: center;
+        }
+
+        .user-info h1 {
+          font-size: 24px;
+          color: white;
+          margin-bottom: 4px;
+        }
+
+        .user-info span {
+          font-size: 14px;
+          color: #64748b;
+        }
+
+        /* Детальні поля даних */
+        .profile-details {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          border-top: 1px solid #1f2937;
+          padding-top: 20px;
+        }
+
+        .detail-item {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .detail-label {
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #94a3b8;
+        }
+
+        .detail-value {
+          background: #1e293b;
+          padding: 12px;
+          border-radius: 10px;
+          font-size: 15px;
+          color: #f1f5f9;
+          word-break: break-word;
+        }
+
+        .bio-text {
+          line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <h2>Messenger</h2>
+            <a href="{% url 'chat_room' %}" class="back-link">← Назад до чату</a>
+
+            <div style="margin-top: auto; padding: 10px; font-size: 14px; color: #94a3b8;">
+                Ви залогінені як: <br><strong>{{ request.user.username }}</strong>
+            </div>
+        </aside>
+
+        <main class="profile-container">
+            <div class="profile-card {% if user_object == request.user %}my-profile{% endif %}"
+                 style="{% if user_object == request.user %}border-color: #22c55e;{% endif %}">
+
+                <div class="avatar-container" style="{% if user_object == request.user %}background: #16a34a; border-color: #14532d;{% else %}background: #2563eb; border-color: #1e3a8a;{% endif %}">
+                    {% if user_object.profile.avatar %}
+                        <img src="{{ user_object.profile.avatar.url }}" alt="Avatar" class="avatar-img">
+                    {% else %}
+                        {{ user_object.username|slice:":1"|upper }}
+                    {% endif %}
+                </div>
+
+                <div class="user-info">
+                    <h1>@{{ user_object.username }}</h1>
+
+                    <div style="margin-top: 8px;">
+                        {% if user_object == request.user %}
+                            <span style="background: #15803d; color: #bbf7d0; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                                Це ви (Мій профіль)
+                            </span>
+                        {% elif user_object.is_staff %}
+                            <span style="background: #dc2626; color: #fecaca; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                                Адміністратор
+                            </span>
+                        {% else %}
+                            <span style="background: #1e293b; color: #94a3b8; padding: 4px 10px; border-radius: 20px; font-size: 12px;">
+                                Учасник
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="profile-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Ім'я та Прізвище</div>
+                        <div class="detail-value">
+                            {{ user_object.get_full_name|default:"Не вказано" }}
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Електронна пошта</div>
+                        <div class="detail-value">{{ user_object.email }}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Про себе</div>
+                        <div class="detail-value bio-text">
+                            {{ user_object.profile.bio|default:"Користувач ще нічого не розповів про себе." }}
+                        </div>
+                    </div>
+                </div>
+
+                {% if user_object == request.user %}
+                    <button style="width: 100%; background: #22c55e; color: white; font-weight: 600; padding: 12px; border-radius: 10px; transition: background 0.2s;"
+                            onclick="alert('Тут згодом буде відкриватися форма редагування профілю!')">
+                        Редагувати профіль
+                    </button>
+                {% endif %}
+
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вхід — Messenger Pro</title>
-    <link rel="stylesheet" href="/static/chat/style.css">
     <style>
-        /* Додаткові стилі суто для центрування форми логіну */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         .login-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             width: 100vw;
             background: #0f172a;
+            padding: 20px;
         }
         .login-card {
             background: #111827;
@@ -21,32 +25,54 @@
             border-radius: 16px;
             border: 1px solid #1f2937;
             width: 100%;
-            max-width: 400px;
+            max-width: 440px;
             text-align: center;
         }
         .login-card h2 {
-            margin-bottom: 24px;
+            margin-bottom: 10px;
             color: #fff;
         }
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
+        .login-card p {
             color: #94a3b8;
             font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            color: #94a3b8;
+            font-size: 14px;
+            display: block;
         }
         .form-group input {
             width: 100%;
+            margin-top: 6px;
+            display: block;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 16px; /* Запобігає автонаближенню екрану на мобільних */
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #3b82f6;
         }
         .login-card button {
             width: 100%;
             background: #2563eb;
             color: white;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
             transition: background 0.2s;
         }
         .login-card button:hover {
@@ -54,8 +80,23 @@
         }
         .error-msg {
             color: #ef4444;
-            font-size: 14px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
             margin-bottom: 16px;
+            text-align: left;
+        }
+        .register-link {
+            display: block;
+            margin-top: 20px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .register-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -63,9 +104,10 @@
     <div class="login-container">
         <div class="login-card">
             <h2>Вхід у Messenger</h2>
+            <p>З поверненням до нашого месенджера</p>
 
             {% if form.errors %}
-                <p class="error-msg">Неправильний логін або пароль!</p>
+                <div class="error-msg">Неправильний логін або пароль!</div>
             {% endif %}
 
             <form method="POST">
@@ -79,8 +121,9 @@
                     <input type="password" name="password" id="password" placeholder="Введіть пароль" required>
                 </div>
                 <button type="submit">Увійти</button>
-                <a href="{% url 'register' %}" style="display: block; margin-top: 20px; color: #3b82f6; text-decoration: none; font-size: 14px;">Немає акаунту? Зареєструватися</a>
             </form>
+
+            <a href="{% url 'register' %}" class="register-link">Немає акаунту? Зареєструватися</a>
         </div>
     </div>
 </body>

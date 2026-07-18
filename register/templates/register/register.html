@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Реєстрація — Messenger Pro</title>
-    <link rel="stylesheet" href="/static/chat/style.css">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        .helptext, form ul {
+            display: none !important;
+        }
         .register-container {
             display: flex;
             justify-content: center;
@@ -33,7 +40,6 @@
             font-size: 14px;
             margin-bottom: 24px;
         }
-        /* Стилізація стандартних полів форми Django */
         .register-card form p {
             text-align: left;
             margin-bottom: 16px;
@@ -44,16 +50,21 @@
             width: 100%;
             margin-top: 6px;
             display: block;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 16px; /* Захищає від зуму на мобільних */
+            outline: none;
+            transition: border-color 0.2s;
         }
-        .register-card form .helptext {
-            display: block;
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 4px;
+        .register-card form input:focus {
+            border-color: #10b981;
         }
         .register-card button {
             width: 100%;
-            background: #10b981; /* Зелена кнопка для реєстрації */
+            background: #10b981;
             color: white;
             font-weight: bold;
             margin-top: 15px;
@@ -61,16 +72,20 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
+            font-size: 16px;
         }
         .register-card button:hover {
             background: #059669;
         }
         .errorlist {
             color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 10px;
+            border-radius: 8px;
             list-style: none;
-            padding: 0;
             font-size: 13px;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
             text-align: left;
         }
         .login-link {
