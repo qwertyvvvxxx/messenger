@@ -27,6 +27,8 @@
           background: #111827;
           padding: 20px;
           border-right: 1px solid #1f2937;
+          display: flex;
+          flex-direction: column;
         }
 
         .room {
@@ -40,11 +42,13 @@
           flex: 1;
           display: flex;
           flex-direction: column;
+          min-width: 0;
         }
 
         header {
           padding: 20px;
           border-bottom: 1px solid #1f2937;
+          font-weight: bold;
         }
 
         .messages {
@@ -52,7 +56,7 @@
           padding: 20px;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 15px;
           overflow: auto;
         }
 
@@ -68,6 +72,7 @@
           gap: 10px;
           padding: 20px;
           border-top: 1px solid #1f2937;
+          background: #0f172a;
         }
 
         input {
@@ -77,13 +82,66 @@
           border-radius: 10px;
           background: #1e293b;
           color: white;
+          font-size: 16px;
+          outline: none;
         }
 
         button {
           padding: 12px 18px;
           border: none;
           border-radius: 10px;
+          background: #2563eb;
+          color: white;
+          font-weight: bold;
           cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        button:hover {
+          background: #1d4ed8;
+        }
+
+        @media (max-width: 768px) {
+          .app {
+            flex-direction: column;
+          }
+
+          .sidebar {
+            width: 100%;
+            height: auto;
+            border-right: none;
+            border-bottom: 1px solid #1f2937;
+            padding: 12px 20px;
+          }
+
+          .sidebar h2 {
+            font-size: 20px;
+            text-align: center;
+          }
+
+          .room {
+            margin-top: 5px;
+            text-align: center;
+            padding: 8px;
+          }
+
+          .sidebar div[style*="margin-top: auto"] {
+            display: none !important;
+          }
+
+          header {
+            padding: 12px 20px;
+            font-size: 15px;
+            text-align: center;
+          }
+
+          .messages {
+            padding: 15px 10px;
+          }
+
+          .composer {
+            padding: 12px;
+          }
         }
     </style>
 </head>
@@ -102,7 +160,7 @@
 
             <div id="messages" class="messages">
                 {% for msg in messages %}
-                    <div style="display: flex; gap: 10px; align-items: flex-end; max-width: 70%; {% if msg.user == request.user %}flex-direction: row-reverse; align-self: flex-end;{% endif %}">
+                    <div style="display: flex; gap: 10px; align-items: flex-end; max-width: 85%; {% if msg.user == request.user %}flex-direction: row-reverse; align-self: flex-end;{% endif %}">
 
                         <a href="{% url 'profile' username=msg.user.username %}" style="text-decoration: none; flex-shrink: 0;">
                             <div style="width: 36px; height: 36px; border-radius: 50%; background: #2563eb; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: white; overflow: hidden; border: 2px solid #1e293b;">
@@ -118,7 +176,7 @@
                             <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">
                                 {{ msg.user.username }} • {{ msg.timestamp|date:"H:i" }}
                             </div>
-                            <div>{{ msg.text }}</div>
+                            <div style="word-break: break-word;">{{ msg.text }}</div>
                         </div>
 
                     </div>
@@ -136,6 +194,5 @@
             </form>
         </main>
     </div>
-
 </body>
 </html>

@@ -150,6 +150,41 @@
         .bio-text {
           line-height: 1.5;
         }
+
+        @media (max-width: 768px) {
+          .app {
+            flex-direction: column;
+            height: auto;
+            min-height: 100vh;
+          }
+
+          .sidebar {
+            width: 100%;
+            border-right: none;
+            border-bottom: 1px solid #1f2937;
+            padding: 15px;
+          }
+
+          .sidebar h2 {
+            text-align: center;
+            margin-bottom: 12px;
+          }
+
+          .sidebar div[style*="margin-top: auto"] {
+            margin-top: 15px !important;
+            text-align: center;
+          }
+
+          .profile-container {
+            padding: 24px 12px;
+            align-items: flex-start;
+          }
+
+          .profile-card {
+            padding: 20px 16px;
+            gap: 20px;
+          }
+        }
     </style>
 </head>
 <body>
@@ -217,7 +252,7 @@
                 </div>
 
                 {% if user_object == request.user %}
-                    <button style="width: 100%; background: #22c55e; color: white; font-weight: 600; padding: 12px; border-radius: 10px; transition: background 0.2s;"
+                    <button style="width: 100%; background: #22c55e; color: white; font-weight: 600; padding: 12px; border-radius: 10px; transition: background 0.2s; border: none; cursor: pointer;"
                             onclick="alert('Тут згодом буде відкриватися форма редагування профілю!')">
                         Редагувати профіль
                     </button>
