@@ -8,7 +8,7 @@ static_cdn/
 __pycache__/
 *.py[cod]
 .venv/ venv/ env/
-.env*
+env*
 *.secret
 *.egg-info/
 .idea/

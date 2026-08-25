@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import environ
 from pathlib import Path
 
+from django.conf.global_settings import ALLOWED_HOSTS
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
@@ -25,8 +27,8 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG")
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
-
+# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+ALLOWED_HOSTS: list[str] = ['*']
 
 # Application definition
 
@@ -38,9 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.chat',
-    'apps.profile',
-    'apps.login',
-    'apps.register',
+    'apps.accounts',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +123,5 @@ STATIC_URL = 'static/'
 LOGIN_URL = 'login'
 
 LOGIN_REDIRECT_URL = 'chat_room'
+
+AUTH_USER_MODEL = 'accounts.User'

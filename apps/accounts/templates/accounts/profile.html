@@ -206,12 +206,12 @@
                     {% if user_object.profile.avatar %}
                         <img src="{{ user_object.profile.avatar.url }}" alt="Avatar" class="avatar-img">
                     {% else %}
-                        {{ user_object.username|slice:":1"|upper }}
+                        {{ user_object.nickname|slice:":1"|upper }}
                     {% endif %}
                 </div>
 
                 <div class="user-info">
-                    <h1>@{{ user_object.username }}</h1>
+                    <h1>{{ user_object.nickname }}</h1>
 
                     <div style="margin-top: 8px;">
                         {% if user_object == request.user %}
@@ -232,15 +232,13 @@
 
                 <div class="profile-details">
                     <div class="detail-item">
-                        <div class="detail-label">Ім'я та Прізвище</div>
-                        <div class="detail-value">
-                            {{ user_object.get_full_name|default:"Не вказано" }}
-                        </div>
+                        <div class="detail-label">Юзернейм</div>
+                        <div class="detail-value">@{{ user_object.username|default:"користувач ще не вказав дату народження" }}</div>
                     </div>
 
                     <div class="detail-item">
-                        <div class="detail-label">Електронна пошта</div>
-                        <div class="detail-value">{{ user_object.email }}</div>
+                        <div class="detail-label">Дата народження</div>
+                        <div class="detail-value">{{ user_object.profile.birth_date|default:"користувач ще не вказав дату народження" }}</div>
                     </div>
 
                     <div class="detail-item">
