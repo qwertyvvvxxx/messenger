@@ -1,0 +1,10 @@
+{% for u in users %}
+    <div class="user-item">
+        <span>{{ u.get_display_name }} (@{{ u.username }})</span>
+        <a href="{% url 'start_chat' u.username %}" class="btn-write">Написати</a>
+    </div>
+{% empty %}
+    {% if query or request.GET.q %}
+        <p class="info-text">Нікого не знайдено</p>
+    {% endif %}
+{% endfor %}

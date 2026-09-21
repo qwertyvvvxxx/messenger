@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат з {{ recipient.username }}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0f172a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; height: 100vh; padding: 20px; }
+        .chat-card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; width: 100%; max-width: 500px; display: flex; flex-direction: column; height: 100%; }
+        .chat-header { padding: 16px; border-bottom: 1px solid #1f2937; display: flex; align-items: center; gap: 15px; }
+        .back-btn { color: #3b82f6; text-decoration: none; font-size: 14px; }
+        .messages-box { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { max-width: 75%; padding: 10px 14px; border-radius: 12px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+        .my-msg { background: #10b981; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .other-msg { background: #1f2937; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .time { font-size: 10px; opacity: 0.7; margin-top: 4px; text-align: right; }
+        .input-area { padding: 16px; border-top: 1px solid #1f2937; display: flex; gap: 10px; }
+        .input-area input { flex: 1; background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 10px 14px; color: white; outline: none; }
+        .input-area button { background: #10b981; border: none; color: white; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="chat-card">
+        <div class="chat-header">
+            <a href="{% url 'chat_list' %}" class="back-btn">← Чати</a>
+            <h3>{{ recipient.username|default:"Видалений користувач" }}</h3>
+        </div>
+        <div class="messages-box" id="msgBox">
+            {% for msg in messages %}
+                <div class="message {% if msg.sender == request.user %}my-msg{% else %}other-msg{% endif %}">
+                    <div>{{ msg.text }}</div>
+                    <div class="time">{{ msg.timestamp|date:"H:i" }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <form method="POST" class="input-area">
+            {% csrf_token %}
+            <input type="text" name="text" placeholder="Напишіть повідомлення..." autocomplete="off" required>
+            <button type="submit">Надіслати</button>
+        </form>
+    </div>
+
+    <script>
+        // Автоматична прокрутка вниз до останнього повідомлення
+        const box = document.getElementById('msgBox');
+        box.scrollTop = box.scrollHeight;
+    </script>
+</body>
+</html>

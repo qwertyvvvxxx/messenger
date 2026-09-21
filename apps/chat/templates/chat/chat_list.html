@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мої чати</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0f172a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
+        .container { background: #111827; border: 1px solid #1f2937; border-radius: 16px; width: 100%; max-width: 500px; padding: 24px; display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-search { background: #10b981; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .chat-item { display: block; background: #1f2937; padding: 14px; border-radius: 10px; margin-bottom: 10px; text-decoration: none; color: white; transition: 0.2s; }
+        .chat-item:hover { background: #374151; }
+        .username { font-weight: bold; font-size: 16px; color: #10b981; }
+        .last-msg { font-size: 13px; color: #94a3b8; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .empty { text-align: center; color: #94a3b8; margin-top: 4px; }
+        .chat-header-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-global {
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #334155;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-global:hover {
+            background: #334155;
+            border-color: #38bdf8;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Мої чати</h2>
+
+            <div class="chat-header-actions">
+                <a href="{% url 'global_chat' %}" class="btn-global">
+                    🌐 Загальний чат
+                </a>
+                <a href="{% url 'user_search' %}" class="btn-search">
+                    + Новий чат
+                </a>
+            </div>
+        </div>
+
+        {% for item in chats %}
+            <a href="{% url 'private_chat_room' item.thread.id %}" class="chat-item">
+                <div class="username">{{ item.recipient.username|default:"Видалений користувач" }}</div>
+                <div class="last-msg">
+                    {% if item.last_message %}
+                        {% if item.last_message.sender == request.user %}Ви: {% endif %}{{ item.last_message.text }}
+                    {% else %}
+                        Немає повідомлень
+                    {% endif %}
+                </div>
+            </a>
+        {% empty %}
+            <p class="empty">У вас ще немає активних чатів.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пошук користувачів</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0f172a; color: #fff; font-family: sans-serif; display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
+        .container { background: #111827; border: 1px solid #1f2937; border-radius: 16px; width: 100%; max-width: 500px; padding: 24px; }
+        .top-bar { display: flex; align-items: center; margin-bottom: 20px; gap: 10px; }
+        .back-link { color: #3b82f6; text-decoration: none; font-size: 14px; }
+        .search-box { margin-bottom: 20px; position: relative; }
+        .search-box input { width: 100%; background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 10px 14px; color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; }
+        .search-box input:focus { border-color: #3b82f6; }
+        .user-item { display: flex; justify-content: space-between; align-items: center; background: #1f2937; padding: 12px 16px; border-radius: 10px; margin-bottom: 10px; }
+        .btn-write { background: #3b82f6; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .info-text { color: #94a3b8; text-align: center; margin-top: 10px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="{% url 'chat_list' %}" class="back-link">← Назад до чатів</a>
+        </div>
+        <h2 style="margin-bottom: 16px;">Пошук користувачів</h2>
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="search-input"
+                value="{{ query }}"
+                placeholder="Введіть username або нікнейм..."
+                autocomplete="off"
+            >
+        </div>
+
+        <div id="results-box">
+            {% include 'chat/partials/user_list.html' %}
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const resultsBox = document.getElementById('results-box');
+        let debounceTimer;
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            const query = this.value.trim();
+
+            if (query.length === 0) {
+                resultsBox.innerHTML = '';
+                return;
+            }
+
+            // Показуємо плашку завантаження, поки чекаємо на відповідь
+            resultsBox.innerHTML = '<p class="info-text">Шукаємо...</p>';
+
+            // Затримка 1.5 секунди (1500 мс)
+            debounceTimer = setTimeout(() => {
+                fetchUsers(query);
+            }, 1500);
+        });
+
+        function fetchUsers(query) {
+            fetch(`{% url 'user_search' %}?q=${encodeURIComponent(query)}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                resultsBox.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Помилка пошуку:', error);
+                resultsBox.innerHTML = '<p class="info-text">Помилка при завантаженні даних</p>';
+            });
+        }
+    </script>
+</body>
+</html>
