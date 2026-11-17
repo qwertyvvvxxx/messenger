@@ -19,6 +19,8 @@
         .input-area input { flex: 1; background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 10px 14px; color: white; outline: none; }
         .input-area button { background: #10b981; border: none; color: white; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
+    <!-- HTMX: оновлюємо чат без перезавантаження сторінки -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 </head>
 <body>
     <div class="chat-card">
@@ -28,13 +30,14 @@
         </div>
         <div class="messages-box" id="msgBox">
             {% for msg in messages %}
-                <div class="message {% if msg.sender == request.user %}my-msg{% else %}other-msg{% endif %}">
-                    <div>{{ msg.text }}</div>
-                    <div class="time">{{ msg.timestamp|date:"H:i" }}</div>
-                </div>
+                {% include 'chat/partials/message.html' %}
             {% endfor %}
         </div>
-        <form method="POST" class="input-area">
+        <form method="POST" class="input-area"
+              hx-post="{% url 'private_chat_room' thread.id %}"
+              hx-target="#msgBox"
+              hx-swap="beforeend"
+              hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
             {% csrf_token %}
             <input type="text" name="text" placeholder="Напишіть повідомлення..." autocomplete="off" required>
             <button type="submit">Надіслати</button>
@@ -42,9 +45,13 @@
     </div>
 
     <script>
-        // Автоматична прокрутка вниз до останнього повідомлення
         const box = document.getElementById('msgBox');
-        box.scrollTop = box.scrollHeight;
+        // Прокрутка вниз після кожного оновлення вмісту
+        box.addEventListener('htmx:afterSwap', () => { box.scrollTop = box.scrollHeight; });
+        // Очистити поле введення після успішної відповіді сервера
+        document.querySelector('.input-area').addEventListener('htmx:afterRequest', (e) => {
+            if (e.detail.successful) e.target.reset();
+        });
     </script>
 </body>
 </html>

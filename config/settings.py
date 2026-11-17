@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import environ
 from pathlib import Path
 
-from django.conf.global_settings import ALLOWED_HOSTS
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
@@ -27,8 +25,9 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG")
 
-# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
-ALLOWED_HOSTS: list[str] = ['*']
+# Хости, яким дозволено звертатися до проєкту.
+# У .env: ALLOWED_HOSTS=127.0.0.1,localhost
+ALLOWED_HOSTS: list[str] = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
 
 # Application definition
 

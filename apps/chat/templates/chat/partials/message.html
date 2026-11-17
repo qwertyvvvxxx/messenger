@@ -1,0 +1,5 @@
+{# Одне повідомлення приватного чату. Використовується і в сторінці, і у відповіді HTMX #}
+<div class="message {% if msg.sender == request.user %}my-msg{% else %}other-msg{% endif %}">
+    <div>{{ msg.text }}</div>
+    <div class="time">{{ msg.timestamp|date:"H:i" }}</div>
+</div>

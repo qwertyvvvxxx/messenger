@@ -1,0 +1,32 @@
+{# Одне повідомлення глобального чату (з аватаркою та іменем автора) #}
+<div style="display: flex; gap: 10px; align-items: flex-end; max-width: 85%; {% if msg.sender == request.user %}flex-direction: row-reverse; align-self: flex-end;{% endif %}">
+
+    {% if msg.sender %}
+        <a href="{% url 'profile' username=msg.sender.username %}" style="text-decoration: none; flex-shrink: 0;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #2563eb; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: white; overflow: hidden; border: 2px solid #1e293b;">
+                {% if msg.sender.profile.avatar %}
+                    <img src="{{ msg.sender.profile.avatar.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    {{ msg.sender.username|slice:":1"|upper }}
+                {% endif %}
+            </div>
+        </a>
+    {% else %}
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #475569; display: flex; justify-content: center; align-items: center; font-size: 14px; color: white; flex-shrink: 0;">
+            ?
+        </div>
+    {% endif %}
+
+    <div class="message" style="max-width: 100%; margin: 0; {% if msg.sender == request.user %}background: #1e3a8a;{% endif %}">
+        <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">
+            {% if msg.sender %}
+                {{ msg.sender.username }}
+            {% else %}
+                Видалений користувач
+            {% endif %}
+            • {{ msg.timestamp|date:"H:i" }}
+        </div>
+        <div style="word-break: break-word;">{{ msg.text }}</div>
+    </div>
+
+</div>

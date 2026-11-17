@@ -7,13 +7,20 @@ from .models import Message, Thread
 
 @login_required
 def chat_room(request):
+    """Глобальний чат: створення повідомлення + рендер частини для HTMX."""
     if request.method == 'POST':
         text = request.POST.get('text', '').strip()
         if text:
-            Message.objects.create(user=request.user, text=text)
+            message = Message.objects.create(sender=request.user, text=text)
+
+            # HTMX надсилає той самий POST, але чекає фрагмент HTML замість редиректу
+            if request.headers.get('HX-Request'):
+                return render(request, 'chat/partials/global_message.html', {'msg': message})
             return redirect('global_chat')
 
-    messages = Message.objects.filter(thread__isnull=True).select_related('user', 'user__profile')
+    messages = Message.objects.filter(thread__isnull=True).select_related(
+        'sender', 'sender__profile'
+    )
     return render(request, 'chat/room.html', {'messages': messages})
 
 
@@ -79,12 +86,15 @@ def private_chat_room(request, thread_id):
     if request.method == 'POST':
         text = request.POST.get('text', '').strip()
         if text:
-            # Використовуємо user=request.user замість sender=request.user
-            Message.objects.create(thread=thread, user=request.user, text=text)
-            thread.save()
+            message = Message.objects.create(thread=thread, sender=request.user, text=text)
+            thread.save()  # оновити updated_at (auto_now)
+
+            # Те саме, що й у глобальному чаті: HTMX хоче фрагмент, а не редирект
+            if request.headers.get('HX-Request'):
+                return render(request, 'chat/partials/message.html', {'msg': message})
             return redirect('private_chat_room', thread_id=thread.id)
 
-    messages = thread.messages.all()
+    messages = thread.messages.select_related('sender')
     return render(request, 'chat/private_room.html', {
         'thread': thread,
         'recipient': recipient,

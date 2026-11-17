@@ -32,12 +32,6 @@ class Thread(models.Model):
 
 
 class Message(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='messages'
-    )
     text = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -57,7 +51,11 @@ class Message(models.Model):
     class Meta:
         ordering = ['timestamp']
 
+    @property
+    def author_name(self) -> str:
+        """Ім'я автора або-запасний варіант, якщо користувача видалили."""
+        return self.sender.username if self.sender else "Видалений користувач"
+
     def __str__(self):
-        sender_name = self.sender.username if self.sender else "Deleted User"
-        return f"{sender_name}: {self.text[:20]}"
+        return f"{self.author_name}: {self.text[:20]}"
 
